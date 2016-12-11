@@ -15,13 +15,11 @@ namespace Explorer.Models
 
         public List<DirectoryObject> Items { get { return _items; } }
         public List<string> ErrorsList { get { return _errors; } }
-
         public string CurrentPath { get; private set; }
         public int SmallFiles { get { return _counters["Small"]; } }
         public int MediumFiles { get { return _counters["Medium"]; } }
         public int LargeFiles { get { return _counters["Large"]; } }
         public bool IsRoot { get; private set; }
-
 
         private IEnumerable<DirectoryObject> GetItems(string currentPath)
         {
@@ -68,7 +66,6 @@ namespace Explorer.Models
             {
                 DirectoryInfo di = new DirectoryInfo(baseDirectory);
                 FileInfo[] fiArr = di.GetFiles();
-
                 foreach (FileInfo fi in fiArr)
                     CheckGroup(fi);
 
@@ -91,12 +88,13 @@ namespace Explorer.Models
             if (name == rootName)
             {
                 var driveInfo = DriveInfo.GetDrives();
+                newDirectory.IsRoot = true;
                 foreach (var info in driveInfo)
                 {
                     newDirectory.Items.Add(new DirectoryObject(info.Name, false));
                     newDirectory.GroupByCount(info.Name);
                 }
-                newDirectory.IsRoot = true;
+  
             }
             else
             {
@@ -111,18 +109,17 @@ namespace Explorer.Models
         {
             if (string.IsNullOrEmpty(id))
                 return CreateInfo(Directory.GetCurrentDirectory());
-
             var parent = Directory.GetParent(id);
             if (parent == null)
-                return CreateInfo("Root");
+                return CreateInfo(rootName);
             return CreateInfo(parent.FullName);
         }      
 
         public static ExplorerObj GoToChild(string path, string file)
         {
-            var str = path == rootName ? file : path + "\\" + file;
-            if (Directory.Exists(str))
-                return CreateInfo(str);
+            var fullPath = path == rootName ? file : path + "\\" + file;
+            if (Directory.Exists(fullPath))
+                return CreateInfo(fullPath);
             return null;
         }
 
