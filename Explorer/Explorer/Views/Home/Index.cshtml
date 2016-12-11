@@ -1,0 +1,40 @@
+﻿@{
+    ViewBag.Title = "Explorer";
+}
+
+<h3>Explorer</h3>
+<div ng-controller="ShowAllCtrl">
+    <table class="table table-bordered" style="width:100%">
+        <tr style="background-color:cornflowerBlue ">
+            <th>&lt;&#61; 10Mb</th>
+            <th>&gt; 10Mb And &lt;&#61; 50Mb</th>
+            <th>&gt;&#61; 100Mb </th>
+        </tr>
+        <tr>
+            <td>{{SmallFiles}}</td>
+            <td>{{MediumFiles}}</td>
+            <td>{{LargeFiles}}</td>
+        </tr>
+    </table>
+    <h4><strong>Current Path: {{CurrentPath}}</strong></h4>
+
+    <div ng-show="HttpInProgress" class="progress progress-striped active">
+        <div ng-show="HttpInProgress" class="progress-bar" role="progressbar" aria-valuenow="100" style="width:100%">
+            Procceding
+        </div>
+    </div>
+    <div ng-show="HttpInProgress === false">
+        <label ng-show="Errors.length > 0">Some errors occurred while processing task</label>
+        <ul>
+            <li style="font-size:10px;" ng-repeat="x in Errors">{{x}}</li>
+        </ul>
+        <a href="" ng-show="IsRoot === false" ng-click="InvokeAction(goToParent,CurrentPath)"><strong>&uarr;UP</strong></a>
+        <ul>
+            <li ng-repeat="x in Items | filter : {IsFile : false}">
+                <a href="" ng-click="InvokeAction(goToChild,x.Name)"> {{x.Name}}</a>
+            </li>
+            <li ng-repeat="x in Items | filter : {IsFile : true}"> {{x.Name}}</li>
+        </ul>
+    </div>
+</div>
+<script src="~/Scripts/ShowAll.ctrl.js"></script>
